@@ -1,3 +1,47 @@
+-----
+
+### 讓圖片控制器按鈕更明顯
+
+您好！您遇到的問題是因為您的 CSS 中設定了 `.nav-btn` 的 `background` 屬性為半透明的白色 `rgba(255, 255, 255, 0.2)`，導致按鈕在某些背景下不那麼容易辨識。
+
+我為您調整了幾個地方，讓按鈕在視覺上更突出：
+
+1.  **調整按鈕背景顏色：** 將按鈕的背景顏色改為不透明的藍色漸變，使其與控制面板的風格保持一致，並在白色背景上更顯眼。
+2.  **增加按鈕文字顏色：** 將按鈕文字顏色改為白色，增強對比度。
+3.  **增強 hover 效果：** 在滑鼠懸停時，按鈕背景顏色會稍微變深，增加互動回饋。
+
+您可以將以下 CSS 程式碼替換掉您現有的 `nav-btn` 相關樣式，或者直接加入到 `<style>` 標籤中：
+
+```css
+.nav-btn {
+    background: linear-gradient(45deg, #4CAF50 0%, #8BC34A 100%); /* 顯眼的綠色漸變 */
+    border: none;
+    color: white; /* 確保文字顏色為白色 */
+    width: 35px; /* 稍微加大按鈕尺寸 */
+    height: 35px; /* 稍微加大按鈕尺寸 */
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    font-size: 18px; /* 稍微加大字體 */
+    font-weight: bold; /* 字體加粗 */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* 增加陰影，使其有立體感 */
+}
+
+.nav-btn:hover {
+    background: linear-gradient(45deg, #388E3C 0%, #689F38 100%); /* hover 時顏色變深 */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* hover 時陰影更明顯 */
+}
+```
+
+-----
+
+### 完整的修改後 HTML 程式碼
+
+```html
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -10,20 +54,17 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Microsoft JhengHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f5f6fa;
             color: #333;
             line-height: 1.6;
         }
-
         .container {
             max-width: 100%;
             margin: 0 auto;
             padding: 20px;
         }
-
         /* 控制面板 */
         .control-panel {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -32,83 +73,74 @@
             margin-bottom: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
-
         .control-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 15px;
             color: white;
         }
-
         .control-section {
             background: rgba(255, 255, 255, 0.1);
             padding: 15px;
             border-radius: 8px;
             backdrop-filter: blur(10px);
         }
-
         .control-section h3 {
             font-size: 16px;
             margin-bottom: 10px;
             color: #fff;
             font-weight: 600;
         }
-
         .photo-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 12px;
         }
-
         .photo-table td {
             padding: 6px 8px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             vertical-align: top;
         }
-
         .photo-table td:first-child {
             width: 50%;
         }
-
+        /* 調整後的 .nav-btn 樣式 */
         .nav-btn {
-            background: rgba(255, 255, 255, 0.2);
+            background: linear-gradient(45deg, #4CAF50 0%, #8BC34A 100%); /* 顯眼的綠色漸變 */
             border: none;
-            color: white;
-            width: 30px;
-            height: 30px;
+            color: white; /* 確保文字顏色為白色 */
+            width: 35px; /* 稍微加大按鈕尺寸 */
+            height: 35px; /* 稍微加大按鈕尺寸 */
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            font-size: 16px;
+            font-size: 18px; /* 稍微加大字體 */
+            font-weight: bold; /* 字體加粗 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* 增加陰影，使其有立體感 */
         }
-
         .nav-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: linear-gradient(45deg, #388E3C 0%, #689F38 100%); /* hover 時顏色變深 */
             transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* hover 時陰影更明顯 */
         }
-
         .image-info {
             min-width: 60px;
             text-align: center;
             font-weight: 500;
         }
-
         .photo-reference {
             font-size: 13px;
             line-height: 1.4;
         }
-
         .photo-reference ol {
             margin-left: 16px;
         }
-
         .photo-reference li {
             margin-bottom: 2px;
         }
-
         /* 圖片控制區 */
         .image-controls {
             background: #f8f9fa;
@@ -117,27 +149,23 @@
             margin-bottom: 15px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-
         .image-controls h4 {
             font-size: 14px;
             margin-bottom: 10px;
             color: #333;
             font-weight: 600;
         }
-
         .image-selectors {
             display: flex;
             justify-content: space-around;
             gap: 20px;
         }
-
         .image-selector {
             display: flex;
             align-items: center;
             gap: 8px;
             font-size: 14px;
         }
-
         /* 圖片顯示區域 */
         .image-display {
             background: white;
@@ -146,17 +174,14 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             min-height: 75vh;
         }
-
         .image-container {
             display: flex;
             gap: 8px;
             height: 100%;
         }
-
         .image-container.vertical {
             flex-direction: column;
         }
-
         .image-panel {
             flex: 1;
             background: #f8f9fa;
@@ -169,20 +194,17 @@
             position: relative;
             overflow: hidden;
         }
-
         .image-panel img {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
             border-radius: 4px;
         }
-
         .image-placeholder {
             color: #6c757d;
             font-size: 16px;
             text-align: center;
         }
-
         .image-title {
             position: absolute;
             top: 10px;
@@ -194,32 +216,26 @@
             font-size: 12px;
             font-weight: 500;
         }
-
         /* 響應式設計 */
         @media (max-width: 768px) {
             .image-selectors {
                 flex-direction: column;
                 gap: 10px;
             }
-            
             .image-container {
                 flex-direction: column;
             }
-            
             .image-panel {
                 min-height: 40vh;
             }
-            
             .photo-table {
                 font-size: 11px;
             }
         }
-
         /* 動畫效果 */
         .image-panel {
             transition: all 0.3s ease;
         }
-
         .image-panel:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
@@ -228,10 +244,8 @@
 </head>
 <body>
     <div class="container">
-        <!-- 控制面板 -->
         <div class="control-panel">
             <div class="control-grid">
-                <!-- 照片對照表 -->
                 <div class="control-section">
                     <h3>📊 照片對照表</h3>
                     <table class="photo-table">
@@ -253,8 +267,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- 圖片控制區 -->
         <div class="image-controls">
             <h4>🎛️ 圖片切換控制</h4>
             <div class="image-selectors">
@@ -272,8 +284,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- 圖片顯示區域 -->
         <div class="image-display">
             <div class="image-container" id="imageContainer">
                 <div class="image-panel">
@@ -295,12 +305,11 @@
             </div>
         </div>
     </div>
-
     <script>
         // 圖片標題對照
         const imageTitles = [
             "1. DOW的跨膜壓差",
-            "2. DOW的流量", 
+            "2. DOW的流量",
             "3. DOW的跨膜壓差（狀況最差的一套）",
             "4. DOW的流量（狀況最差的一套）",
             "5. 美能E套跨膜壓差",
@@ -308,7 +317,6 @@
             "7. 美能F套跨膜壓差",
             "8. 美能F套流量"
         ];
-
         // 圖片檔案路徑 - GitHub直接連結
         const imageFiles = [
             "https://github.com/c-ken-c/kentest/raw/main/images/1.JPG",  // DOW的跨膜壓差
@@ -320,26 +328,23 @@
             "https://github.com/c-ken-c/kentest/raw/main/images/7.JPG",  // 美能F套跨膜壓差
             "https://github.com/c-ken-c/kentest/raw/main/images/8.JPG"   // 美能F套流量
         ];
-
         // 當前圖片索引
         let currentImages = {
             left: 0,
             right: 1
         };
-
         // 切換圖片
         function changeImage(side, direction) {
             const currentIndex = currentImages[side];
             let newIndex = currentIndex + direction;
-            
+
             // 循環切換
             if (newIndex < 0) newIndex = 7;
             if (newIndex > 7) newIndex = 0;
-            
+
             currentImages[side] = newIndex;
             updateImageDisplay(side);
         }
-
         // 更新圖片顯示
         function updateImageDisplay(side) {
             const index = currentImages[side];
@@ -347,10 +352,10 @@
             const info = document.getElementById(side + 'ImageInfo');
             const img = document.getElementById(side + 'Image');
             const placeholder = document.getElementById(side + 'Placeholder');
-            
+
             title.textContent = imageTitles[index];
             info.textContent = `${index + 1}/8`;
-            
+
             // 載入圖片
             img.src = imageFiles[index];
             img.onload = function() {
@@ -363,10 +368,10 @@
                 placeholder.innerHTML = `圖片載入失敗<br><small>請確認 ${imageFiles[index]} 檔案存在</small>`;
             };
         }
-
         // 初始化
         updateImageDisplay('left');
         updateImageDisplay('right');
     </script>
 </body>
 </html>
+```
