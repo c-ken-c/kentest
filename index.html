@@ -19,7 +19,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 100%;
             margin: 0 auto;
             padding: 20px;
         }
@@ -57,7 +57,7 @@
         .display-controls {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 15px;
         }
 
         .layout-toggle {
@@ -65,7 +65,6 @@
             background: rgba(255, 255, 255, 0.2);
             border-radius: 25px;
             padding: 4px;
-            margin-bottom: 10px;
         }
 
         .layout-btn {
@@ -87,8 +86,8 @@
 
         .image-selectors {
             display: flex;
-            gap: 10px;
-            align-items: center;
+            flex-direction: column;
+            gap: 12px;
         }
 
         .image-selector {
@@ -143,7 +142,7 @@
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            min-height: 600px;
+            min-height: 80vh;
         }
 
         .image-container {
@@ -163,7 +162,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 300px;
+            min-height: 70vh;
             border: 2px dashed #dee2e6;
             position: relative;
             overflow: hidden;
@@ -205,9 +204,8 @@
                 flex-direction: column;
             }
             
-            .image-selectors {
-                flex-direction: column;
-                gap: 8px;
+            .image-panel {
+                min-height: 50vh;
             }
         }
 
@@ -307,6 +305,18 @@
             "8. 美能F套流量"
         ];
 
+        // 圖片檔案路徑 - 請根據您的實際檔案名稱修改
+        const imageFiles = [
+            "image1.jpg",  // DOW的跨膜壓差
+            "image2.jpg",  // DOW的流量
+            "image3.jpg",  // DOW的跨膜壓差（狀況最差的一套）
+            "image4.jpg",  // DOW的流量（狀況最差的一套）
+            "image5.jpg",  // 美能E套跨膜壓差
+            "image6.jpg",  // 美能E套流量
+            "image7.jpg",  // 美能F套跨膜壓差
+            "image8.jpg"   // 美能F套流量
+        ];
+
         // 當前圖片索引
         let currentImages = {
             left: 0,
@@ -347,9 +357,23 @@
             const index = currentImages[side];
             const title = document.getElementById(side + 'Title');
             const info = document.getElementById(side + 'ImageInfo');
+            const img = document.getElementById(side + 'Image');
+            const placeholder = document.getElementById(side + 'Placeholder');
             
             title.textContent = imageTitles[index];
             info.textContent = `${index + 1}/8`;
+            
+            // 載入圖片
+            img.src = imageFiles[index];
+            img.onload = function() {
+                placeholder.style.display = 'none';
+                img.style.display = 'block';
+            };
+            img.onerror = function() {
+                placeholder.style.display = 'block';
+                img.style.display = 'none';
+                placeholder.innerHTML = `圖片載入失敗<br><small>請確認 ${imageFiles[index]} 檔案存在</small>`;
+            };
         }
 
         // 初始化
