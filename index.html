@@ -1,41 +1,360 @@
-<div id="controls">
-  <table style="width: 100%; border-collapse: collapse;">
-    <tr>
-      <td style="width: 50%; background: #eee; padding: 10px; border: 1px solid #ccc;">
-        <strong>網頁顯示調整</strong>
-      </td>
-      <td style="width: 50%; background: #eee; padding: 10px; border: 1px solid #ccc;">
-        <strong>照片對照表</strong>
-      </td>
-    </tr>
-    <tr>
-      <td style="background: #eee; padding: 10px; border: 1px solid #ccc;">
-        顯示方式：
-        <select id="layout" onchange="changeLayout()">
-          <option value="row">左右</option>
-          <option value="column">上下</option>
-        </select>
-        <br><br>
-        左/上圖：
-        <button onclick="prev('top')">&lt;</button>
-        <span id="top-label"></span>
-        <button onclick="next('top')">&gt;</button>
-        <br><br>
-        右/下圖：
-        <button onclick="prev('bottom')">&lt;</button>
-        <span id="bottom-label"></span>
-        <button onclick="next('bottom')">&gt;</button>
-      </td>
-      <td style="background: #eee; padding: 10px; border: 1px solid #ccc; font-size: 14px;">
-        1. DOW的跨膜壓差<br>
-        2. DOW的流量<br>
-        3. DOW的跨膜壓差（狀況最差的一套）<br>
-        4. DOW的流量（狀況最差的一套）<br>
-        5. 美能E套跨膜壓差<br>
-        6. 美能E套流量<br>
-        7. 美能F套跨膜壓差<br>
-        8. 美能F套流量
-      </td>
-    </tr>
-  </table>
-</div>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>照片對照比較工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f6fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .control-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            color: white;
+        }
+
+        .control-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-section h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .display-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .layout-toggle {
+            display: flex;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 4px;
+            margin-bottom: 10px;
+        }
+
+        .layout-btn {
+            flex: 1;
+            padding: 8px 16px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .layout-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .image-selectors {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .image-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .image-info {
+            min-width: 60px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .photo-reference {
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .photo-reference ol {
+            margin-left: 16px;
+        }
+
+        .photo-reference li {
+            margin-bottom: 2px;
+        }
+
+        /* 圖片顯示區域 */
+        .image-display {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            min-height: 600px;
+        }
+
+        .image-container {
+            display: flex;
+            gap: 20px;
+            height: 100%;
+        }
+
+        .image-container.vertical {
+            flex-direction: column;
+        }
+
+        .image-panel {
+            flex: 1;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            border: 2px dashed #dee2e6;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-panel img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .image-placeholder {
+            color: #6c757d;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .image-title {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .control-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .image-container {
+                flex-direction: column;
+            }
+            
+            .image-selectors {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        /* 動畫效果 */
+        .image-panel {
+            transition: all 0.3s ease;
+        }
+
+        .image-panel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 控制面板 -->
+        <div class="control-panel">
+            <div class="control-grid">
+                <!-- 網頁顯示調整 -->
+                <div class="control-section">
+                    <h3>🎛️ 網頁顯示調整</h3>
+                    <div class="display-controls">
+                        <div class="layout-toggle">
+                            <button class="layout-btn active" onclick="setLayout('horizontal')">左右對比</button>
+                            <button class="layout-btn" onclick="setLayout('vertical')">上下對比</button>
+                        </div>
+                        <div class="image-selectors">
+                            <div class="image-selector">
+                                <span>左/上圖：</span>
+                                <button class="nav-btn" onclick="changeImage('left', -1)">‹</button>
+                                <span class="image-info" id="leftImageInfo">1/8</span>
+                                <button class="nav-btn" onclick="changeImage('left', 1)">›</button>
+                            </div>
+                            <div class="image-selector">
+                                <span>右/下圖：</span>
+                                <button class="nav-btn" onclick="changeImage('right', -1)">‹</button>
+                                <span class="image-info" id="rightImageInfo">2/8</span>
+                                <button class="nav-btn" onclick="changeImage('right', 1)">›</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 照片對照表 -->
+                <div class="control-section">
+                    <h3>📊 照片對照表</h3>
+                    <div class="photo-reference">
+                        <ol>
+                            <li>DOW的跨膜壓差</li>
+                            <li>DOW的流量</li>
+                            <li>DOW的跨膜壓差（狀況最差的一套）</li>
+                            <li>DOW的流量（狀況最差的一套）</li>
+                            <li>美能E套跨膜壓差</li>
+                            <li>美能E套流量</li>
+                            <li>美能F套跨膜壓差</li>
+                            <li>美能F套流量</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 圖片顯示區域 -->
+        <div class="image-display">
+            <div class="image-container" id="imageContainer">
+                <div class="image-panel">
+                    <div class="image-title" id="leftTitle">1. DOW的跨膜壓差</div>
+                    <div class="image-placeholder" id="leftPlaceholder">
+                        請選擇左/上圖片<br>
+                        <small>使用上方按鈕切換圖片</small>
+                    </div>
+                    <img id="leftImage" style="display: none;">
+                </div>
+                <div class="image-panel">
+                    <div class="image-title" id="rightTitle">2. DOW的流量</div>
+                    <div class="image-placeholder" id="rightPlaceholder">
+                        請選擇右/下圖片<br>
+                        <small>使用上方按鈕切換圖片</small>
+                    </div>
+                    <img id="rightImage" style="display: none;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 圖片標題對照
+        const imageTitles = [
+            "1. DOW的跨膜壓差",
+            "2. DOW的流量", 
+            "3. DOW的跨膜壓差（狀況最差的一套）",
+            "4. DOW的流量（狀況最差的一套）",
+            "5. 美能E套跨膜壓差",
+            "6. 美能E套流量",
+            "7. 美能F套跨膜壓差",
+            "8. 美能F套流量"
+        ];
+
+        // 當前圖片索引
+        let currentImages = {
+            left: 0,
+            right: 1
+        };
+
+        // 設置佈局
+        function setLayout(layout) {
+            const container = document.getElementById('imageContainer');
+            const buttons = document.querySelectorAll('.layout-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if (layout === 'horizontal') {
+                container.classList.remove('vertical');
+                buttons[0].classList.add('active');
+            } else {
+                container.classList.add('vertical');
+                buttons[1].classList.add('active');
+            }
+        }
+
+        // 切換圖片
+        function changeImage(side, direction) {
+            const currentIndex = currentImages[side];
+            let newIndex = currentIndex + direction;
+            
+            // 循環切換
+            if (newIndex < 0) newIndex = 7;
+            if (newIndex > 7) newIndex = 0;
+            
+            currentImages[side] = newIndex;
+            updateImageDisplay(side);
+        }
+
+        // 更新圖片顯示
+        function updateImageDisplay(side) {
+            const index = currentImages[side];
+            const title = document.getElementById(side + 'Title');
+            const info = document.getElementById(side + 'ImageInfo');
+            
+            title.textContent = imageTitles[index];
+            info.textContent = `${index + 1}/8`;
+        }
+
+        // 初始化
+        updateImageDisplay('left');
+        updateImageDisplay('right');
+    </script>
+</body>
+</html>
