@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>圖片比對工具</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    #controls {
+      padding: 10px;
+      background: #eee;
+      text-align: center;
+    }
+    #viewer {
+      flex: 1;
+      display: flex;
+      flex-direction: column; /* 改為 row 會變左右 */
+    }
+    .viewer-part {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid #ccc;
+    }
+    img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<div id="controls">
+  <div>
+    上圖：
+    <button onclick="prev('top')">&lt;</button>
+    <span id="top-label"></span>
+    <button onclick="next('top')">&gt;</button>
+  </div>
+  <div>
+    下圖：
+    <button onclick="prev('bottom')">&lt;</button>
+    <span id="bottom-label"></span>
+    <button onclick="next('bottom')">&gt;</button>
+  </div>
+</div>
+
+<div id="viewer">
+  <div class="viewer-part"><img id="top-img" src=""></div>
+  <div class="viewer-part"><img id="bottom-img" src=""></div>
+</div>
+
+<script>
+  const imageList = ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "7.jpg", "8.jpg"];
+  let topIndex = 0;
+  let bottomIndex = 1;
+
+  function updateView() {
+    document.getElementById('top-img').src = 'images/' + imageList[topIndex];
+    document.getElementById('bottom-img').src = 'images/' + imageList[bottomIndex];
+    document.getElementById('top-label').textContent = `第 ${topIndex + 1} 頁`;
+    document.getElementById('bottom-label').textContent = `第 ${bottomIndex + 1} 頁`;
+  }
+
+  function prev(target) {
+    if (target === 'top') {
+      topIndex = (topIndex - 1 + imageList.length) % imageList.length;
+    } else {
+      bottomIndex = (bottomIndex - 1 + imageList.length) % imageList.length;
+    }
+    updateView();
+  }
+
+  function next(target) {
+    if (target === 'top') {
+      topIndex = (topIndex + 1) % imageList.length;
+    } else {
+      bottomIndex = (bottomIndex + 1) % imageList.length;
+    }
+    updateView();
+  }
+
+  // 初始化
+  updateView();
+</script>
+
+</body>
+</html>
