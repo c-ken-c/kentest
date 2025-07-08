@@ -1,111 +1,41 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-  <meta charset="UTF-8">
-  <title>圖片比對工具</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
-    #controls {
-      padding: 10px;
-      background: #eee;
-      text-align: center;
-    }
-    #viewer {
-      flex: 1;
-      display: flex;
-    }
-    .viewer-part {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border: 1px solid #ccc;
-      overflow: hidden;
-    }
-    img {
-      max-width: 100%;
-      max-height: 100%;
-    }
-  </style>
-</head>
-<body>
-
 <div id="controls">
-  <div>
-    <label>顯示方式：
-      <select id="layout" onchange="changeLayout()">
-        <option value="row">左右</option>
-        <option value="column">上下</option>
-      </select>
-    </label>
-  </div>
-  <div>
-    左/上圖：
-    <button onclick="prev('top')">&lt;</button>
-    <span id="top-label"></span>
-    <button onclick="next('top')">&gt;</button>
-  </div>
-  <div>
-    右/下圖：
-    <button onclick="prev('bottom')">&lt;</button>
-    <span id="bottom-label"></span>
-    <button onclick="next('bottom')">&gt;</button>
-  </div>
+  <table style="width: 100%; border-collapse: collapse;">
+    <tr>
+      <td style="width: 50%; background: #eee; padding: 10px; border: 1px solid #ccc;">
+        <strong>網頁顯示調整</strong>
+      </td>
+      <td style="width: 50%; background: #eee; padding: 10px; border: 1px solid #ccc;">
+        <strong>照片對照表</strong>
+      </td>
+    </tr>
+    <tr>
+      <td style="background: #eee; padding: 10px; border: 1px solid #ccc;">
+        顯示方式：
+        <select id="layout" onchange="changeLayout()">
+          <option value="row">左右</option>
+          <option value="column">上下</option>
+        </select>
+        <br><br>
+        左/上圖：
+        <button onclick="prev('top')">&lt;</button>
+        <span id="top-label"></span>
+        <button onclick="next('top')">&gt;</button>
+        <br><br>
+        右/下圖：
+        <button onclick="prev('bottom')">&lt;</button>
+        <span id="bottom-label"></span>
+        <button onclick="next('bottom')">&gt;</button>
+      </td>
+      <td style="background: #eee; padding: 10px; border: 1px solid #ccc; font-size: 14px;">
+        1. DOW的跨膜壓差<br>
+        2. DOW的流量<br>
+        3. DOW的跨膜壓差（狀況最差的一套）<br>
+        4. DOW的流量（狀況最差的一套）<br>
+        5. 美能E套跨膜壓差<br>
+        6. 美能E套流量<br>
+        7. 美能F套跨膜壓差<br>
+        8. 美能F套流量
+      </td>
+    </tr>
+  </table>
 </div>
-
-<div id="viewer">
-  <div class="viewer-part"><img id="top-img" src=""></div>
-  <div class="viewer-part"><img id="bottom-img" src=""></div>
-</div>
-
-<script>
-  const imageList = [
-    "1.JPG", "2.JPG", "3.JPG", "4.JPG",
-    "5.JPG", "6.JPG", "7.JPG", "8.JPG"
-  ];
-  let topIndex = 0;
-  let bottomIndex = 1;
-
-  function updateView() {
-    document.getElementById('top-img').src = 'images/' + imageList[topIndex];
-    document.getElementById('bottom-img').src = 'images/' + imageList[bottomIndex];
-    document.getElementById('top-label').textContent = `第 ${topIndex + 1} 頁`;
-    document.getElementById('bottom-label').textContent = `第 ${bottomIndex + 1} 頁`;
-  }
-
-  function prev(target) {
-    if (target === 'top') {
-      topIndex = (topIndex - 1 + imageList.length) % imageList.length;
-    } else {
-      bottomIndex = (bottomIndex - 1 + imageList.length) % imageList.length;
-    }
-    updateView();
-  }
-
-  function next(target) {
-    if (target === 'top') {
-      topIndex = (topIndex + 1) % imageList.length;
-    } else {
-      bottomIndex = (bottomIndex + 1) % imageList.length;
-    }
-    updateView();
-  }
-
-  function changeLayout() {
-    const layout = document.getElementById('layout').value;
-    document.getElementById('viewer').style.flexDirection = layout;
-  }
-
-  // 初始化
-  changeLayout();
-  updateView();
-</script>
-
-</body>
-</html>
